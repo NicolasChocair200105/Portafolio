@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<!-- =========================================================================
+     [MÓDULO: CONFIGURACIÓN BASE Y HEAD]
+     Si exportas esto, el contenido del <head> iría en tu archivo principal o layout.
+========================================================================== -->
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chocair - Software & Cloud Engineer</title>
+    
+    <!-- Tailwind CSS (CDN para evitar instalación en este entorno) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Configuración personalizada de Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Permite activar el modo oscuro manualmente con JS
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            accent: '#d97706', // Tono dorado/ámbar elegante
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Transiciones suaves generales */
+        body { transition: background-color 0.3s ease, color 0.3s ease; }
+        
+        /* Animación de entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+
+        /* Ocultar barra de desplazamiento manteniendo la funcionalidad */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+
+<!-- =========================================================================
+     [MÓDULO: DISEÑO BASE Y FONDO]
+     Cuerpo de la página con tonos Pizarra/Hueso.
+========================================================================== -->
+<body class="antialiased bg-stone-50 text-slate-800 dark:bg-slate-950 dark:text-slate-300 relative overflow-x-hidden">
+
+    <!-- Fondo de curvas SVG (Estilo corporativo/consultoría) -->
+    <svg class="fixed top-0 right-0 h-full w-full opacity-30 pointer-events-none stroke-slate-300 dark:stroke-slate-800 z-0 transition-colors duration-300" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M50,0 Q60,50 80,100" fill="none" stroke-width="0.1"/>
+        <path d="M60,0 Q50,40 90,100" fill="none" stroke-width="0.1"/>
+        <path d="M70,0 Q65,60 100,100" fill="none" stroke-width="0.1"/>
+        <path d="M40,0 Q70,70 85,100" fill="none" stroke-width="0.05"/>
+        <path d="M80,0 Q40,30 95,100" fill="none" stroke-width="0.08"/>
+    </svg>
+
+    <!-- =========================================================================
+         [MÓDULO: NAVEGACIÓN (NAVBAR)]
+         Si modularizas, este sería tu componente <Navbar />
+    ========================================================================== -->
+    <nav class="fixed top-0 w-full z-50 bg-stone-50/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-stone-200 dark:border-slate-800 transition-colors duration-300">
+        <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+            
+            <a href="#" class="font-serif font-bold text-2xl tracking-tight text-slate-900 dark:text-white">
+                Chocair<span class="text-brand-accent">.</span>
+            </a>
+            
+            <!-- Enlaces Desktop -->
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
+                <a href="#about" class="hover:text-brand-accent transition-colors" data-i18n="nav.about">Sobre mí</a>
+                <a href="#stack" class="hover:text-brand-accent transition-colors" data-i18n="nav.stack">Stack</a>
+                <a href="#projects" class="hover:text-brand-accent transition-colors" data-i18n="nav.projects">Proyectos</a>
+            </div>
+
+            <!-- Controles (Idioma y Tema) -->
+            <div class="flex items-center gap-4">
+                
+                <!-- Selector de Idiomas Dropdown -->
+                <div class="relative">
+                    <button id="langBtn" class="flex items-center gap-2 text-xs font-bold px-3 py-1 h-8 rounded-full border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-900">
+                        <span id="currentLangFlag">🇪🇸</span>
+                        <span id="currentLangText">ES</span>
+                        <i class="ph ph-caret-down text-slate-500"></i>
+                    </button>
+                    
+                    <!-- Menú oculto (9 idiomas ordenados alfabéticamente por acrónimo) -->
+                    <div id="langMenu" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl flex flex-col py-2 z-50">
+                        <button class="lang-option flex items-center gap-3 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors" data-lang="de"><span>🇩🇪</span> DE</button>
+                        <button class="lang-option flex items-center gap-3 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors" data-lang="en"><span>🇺🇸</span> EN</button>
+                        <button class="lang-option flex items-center gap-3 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors" data-lang="es"><span>🇪🇸</span> ES</button>
+                        <button class="lang-option flex items-center gap-3 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors" data-lang="fr"><span>🇫🇷</span> FR</button>
+                        <button class="lang-option flex items-center gap-3 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors" data-lang="it"><span>🇮🇹</span> IT</button>
+                        <button class="lang-option flex items-center gap-3 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors" data-lang="ja"><span>🇯🇵</span> JA</button>
+                        <button class="lang-option flex items-center gap-3 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors" data-lang="pt"><span>🇧🇷</span> PT</button>
+                        <button class="lang-option flex items-center gap-3 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors" data-lang="ru"><span>🇷🇺</span> RU</button>
+                        <button class="lang-option flex items-center gap-3 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors" data-lang="zh"><span>🇨🇳</span> ZH</button>
+                    </div>
+                </div>
+
+                <!-- Botón Modo Oscuro -->
+                <button id="themeToggle" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+                    <i id="themeIcon" class="ph ph-moon text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- =========================================================================
+         [MÓDULO: CONTENIDO PRINCIPAL (MAIN)]
+    ========================================================================== -->
+    <main class="relative z-10">
+
+        <!-- SECCIÓN 1: HERO -->
+        <section id="hero" class="min-h-screen flex flex-col justify-center px-6 max-w-5xl mx-auto animate-fade-in pt-20">
+            <p class="text-brand-accent font-medium mb-6 tracking-[0.2em] text-xs uppercase" data-i18n="hero.greeting">Áreas de Impacto</p>
+            <h1 class="text-5xl md:text-7xl font-serif font-bold tracking-tight mb-6 leading-tight text-slate-900 dark:text-white">
+                <span data-i18n="hero.title1">Experiencia que conecta</span> <br>
+                <span class="italic font-light text-slate-500 dark:text-slate-400" data-i18n="hero.title2">lógica, datos y nube.</span>
+            </h1>
+            <p class="text-lg md:text-xl max-w-2xl text-slate-600 dark:text-slate-400 leading-relaxed mb-10 font-light" data-i18n="hero.description">
+                Estudiante de Ingeniería en Informática. Desarrollando soluciones de software eficientes, diseñando arquitecturas de datos sólidas y desplegando infraestructuras seguras.
+            </p>
+            <div class="flex gap-4">
+                <a href="#projects" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-3 rounded-full text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors flex items-center gap-2">
+                    <span data-i18n="hero.btnProjects">Ver Proyectos</span> <i class="ph ph-arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: SOBRE MÍ (Fondo alternado para diferenciar) -->
+        <section id="about" class="py-24 bg-white/60 dark:bg-slate-900/60 border-y border-stone-200 dark:border-slate-800 backdrop-blur-sm">
+            <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row gap-16">
+                <div class="md:w-1/3">
+                    <h2 class="text-3xl font-serif font-bold text-slate-900 dark:text-white mb-2" data-i18n="about.title">El Contexto</h2>
+                    <div class="w-12 h-0.5 bg-brand-accent mt-4"></div>
+                </div>
+                <div class="md:w-2/3 space-y-6 text-slate-600 dark:text-slate-400 leading-relaxed text-lg font-light">
+                    <p data-i18n="about.p1">
+                        Cursando el 3° año de Ingeniería en Informática. Mi enfoque combina una sólida base académica con aplicación práctica en entornos reales.
+                    </p>
+                    <p data-i18n="about.p2">
+                        Poseo certificaciones formales en <strong>Diseño Ágil de Sistemas</strong> y <strong>Soporte Computacional</strong>. Esto me permite comprender el ciclo completo: desde el desarrollo ágil hasta la infraestructura subyacente.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: STACK TÉCNICO -->
+        <section id="stack" class="py-24 max-w-5xl mx-auto px-6">
+            <div class="mb-16">
+                <h2 class="text-3xl font-serif font-bold text-slate-900 dark:text-white mb-2" data-i18n="stack.title">Arsenal Tecnológico</h2>
+                <div class="w-12 h-0.5 bg-brand-accent mt-4"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="p-8 bg-white dark:bg-slate-900 rounded-2xl border border-stone-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <i class="ph ph-cloud-network text-4xl text-brand-accent mb-6"></i>
+                    <h3 class="text-xl font-serif font-bold text-slate-900 dark:text-white mb-4" data-i18n="stack.cloud.title">Cloud & Redes</h3>
+                    <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-400 font-light">
+                        <li>• Arquitectura Multi Cloud (AWS)</li>
+                        <li>• EC2, VPC, NAT, Security Groups</li>
+                        <li>• Redes de Datos & Conectividad SSH</li>
+                    </ul>
+                </div>
+                <!-- Card 2 -->
+                <div class="p-8 bg-white dark:bg-slate-900 rounded-2xl border border-stone-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <i class="ph ph-code-block text-4xl text-brand-accent mb-6"></i>
+                    <h3 class="text-xl font-serif font-bold text-slate-900 dark:text-white mb-4" data-i18n="stack.dev.title">Desarrollo</h3>
+                    <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-400 font-light">
+                        <li>• Programación Orientada a Objetos</li>
+                        <li>• Desarrollo Front End & Back End</li>
+                        <li>• Aplicaciones Móviles para IoT</li>
+                    </ul>
+                </div>
+                <!-- Card 3 -->
+                <div class="p-8 bg-white dark:bg-slate-900 rounded-2xl border border-stone-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <i class="ph ph-database text-4xl text-brand-accent mb-6"></i>
+                    <h3 class="text-xl font-serif font-bold text-slate-900 dark:text-white mb-4" data-i18n="stack.data.title">Datos & Metodología</h3>
+                    <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-400 font-light">
+                        <li>• BBDD Estructuradas y No Estructuradas</li>
+                        <li>• Minería y Arquitectura de Datos</li>
+                        <li>• Ingeniería de Software Ágil</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: PROYECTOS (Fondo alternado) -->
+        <section id="projects" class="py-24 bg-white/60 dark:bg-slate-900/60 border-y border-stone-200 dark:border-slate-800 backdrop-blur-sm">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="mb-16">
+                    <h2 class="text-3xl font-serif font-bold text-slate-900 dark:text-white mb-2" data-i18n="projects.title">Proyectos Destacados</h2>
+                    <div class="w-12 h-0.5 bg-brand-accent mt-4"></div>
+                </div>
+
+                <div class="space-y-16">
+                    <!-- Proyecto 1: AWS -->
+                    <article class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                        <div class="md:col-span-4">
+                            <span class="text-xs font-bold tracking-widest text-brand-accent uppercase mb-2 block">Cloud Engineering</span>
+                            <h3 class="text-2xl font-serif font-bold text-slate-900 dark:text-white mb-2">Arquitectura Segura AWS</h3>
+                            <p class="text-sm italic text-slate-500">Entorno "Chocair"</p>
+                        </div>
+                        <div class="md:col-span-8 space-y-4 text-slate-600 dark:text-slate-400 font-light">
+                            <p data-i18n="proj2.desc">
+                                Diseño y despliegue de infraestructura de red en AWS con segmentación estricta.
+                            </p>
+                            <p data-i18n="proj2.desc2">
+                                Aislamiento de servidor web público (EC2) de la base de datos privada. Configuración de VPCs, NAT Gateways, Tablas de Ruteo y Security Groups (SSH).
+                            </p>
+                            <div class="flex flex-wrap gap-2 pt-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                                <span class="bg-stone-200/50 dark:bg-slate-800 px-3 py-1 rounded-full border border-stone-300 dark:border-slate-700">AWS EC2</span>
+                                <span class="bg-stone-200/50 dark:bg-slate-800 px-3 py-1 rounded-full border border-stone-300 dark:border-slate-700">VPC & Networking</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <div class="w-full h-px bg-stone-300 dark:bg-slate-800"></div>
+
+                    <!-- Proyecto 2: Sece -->
+                    <article class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                        <div class="md:col-span-4">
+                            <span class="text-xs font-bold tracking-widest text-brand-accent uppercase mb-2 block">Software & Datos</span>
+                            <h3 class="text-2xl font-serif font-bold text-slate-900 dark:text-white mb-2">Sistema Logístico "Sece"</h3>
+                        </div>
+                        <div class="md:col-span-8 space-y-4 text-slate-600 dark:text-slate-400 font-light">
+                            <p data-i18n="proj1.desc">
+                                Desarrollo de software de inventario eléctrico y logístico para infraestructura de alumbrado público.
+                            </p>
+                            <p data-i18n="proj1.desc2">
+                                Abarcó desde el levantamiento de requisitos hasta la arquitectura de base de datos y la implementación lógica para control de activos.
+                            </p>
+                            <div class="flex flex-wrap gap-2 pt-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                                <span class="bg-stone-200/50 dark:bg-slate-800 px-3 py-1 rounded-full border border-stone-300 dark:border-slate-700">Arquitectura BBDD</span>
+                                <span class="bg-stone-200/50 dark:bg-slate-800 px-3 py-1 rounded-full border border-stone-300 dark:border-slate-700">POO</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========================================================================
+         [MÓDULO: LÓGICA DE APLICACIÓN (JAVASCRIPT)]
+         Si modularizas, tendrías un theme.js, i18n.js, etc.
+    ========================================================================== -->
+    <script>
+        /* ---------------------------------------------------
+           1. MÓDULO DE INTERNACIONALIZACIÓN (i18n)
+        --------------------------------------------------- */
+        
+        // Diccionario completo en 9 idiomas
+        const translations = {
+            de: {
+                'nav.about': 'Über mich', 'nav.stack': 'Stack', 'nav.projects': 'Projekte',
+                'hero.greeting': 'Wirkungsbereiche', 'hero.title1': 'Erfahrung verbindet', 'hero.title2': 'Logik, Daten & Cloud.',
+                'hero.description': 'Informatikstudent. Entwicklung effizienter Software, solider Datenarchitekturen und sicherer Cloud-Infrastrukturen.',
+                'hero.btnProjects': 'Projekte ansehen',
+                'about.title': 'Der Kontext',
+                'about.p1': 'Student im 6. Semester Informatik. Ich verbinde akademische Theorie mit praktischer Anwendung.',
+                'about.p2': 'Zertifiziert in Agilem Systemdesign und IT-Support.',
+                'stack.title': 'Technik-Arsenal', 'stack.cloud.title': 'Cloud & Netzwerke', 'stack.dev.title': 'Entwicklung', 'stack.data.title': 'Daten',
+                'projects.title': 'Ausgewählte Projekte',
+                'proj1.desc': 'Inventarsoftware für öffentliche Beleuchtungsinfrastruktur.',
+                'proj1.desc2': 'Von Anforderungsermittlung bis zur Datenbankarchitektur.',
+                'proj2.desc': 'Netzwerkinfrastruktur auf AWS mit strenger Segmentierung.',
+                'proj2.desc2': 'Isolierung des Webservers von der privaten Datenbank.'
+            },
+            en: {
+                'nav.about': 'About', 'nav.stack': 'Stack', 'nav.projects': 'Projects',
+                'hero.greeting': 'Areas of Impact', 'hero.title1': 'Experience bridging', 'hero.title2': 'logic, data & cloud.',
+                'hero.description': 'Computer Engineering Student. Developing efficient software, solid data architectures, and secure cloud infrastructures.',
+                'hero.btnProjects': 'View Projects',
+                'about.title': 'The Context',
+                'about.p1': '6th-semester Computer Engineering student. Combining academic foundation with practical application.',
+                'about.p2': 'Certified in Agile Systems Design and IT Support.',
+                'stack.title': 'Tech Arsenal', 'stack.cloud.title': 'Cloud & Networks', 'stack.dev.title': 'Development', 'stack.data.title': 'Data',
+                'projects.title': 'Featured Projects',
+                'proj1.desc': 'Inventory software for public lighting infrastructure.',
+                'proj1.desc2': 'From requirements to database architecture.',
+                'proj2.desc': 'AWS network infrastructure with strict segmentation.',
+                'proj2.desc2': 'Isolating public web server from private database.'
+            },
+            es: {
+                'nav.about': 'Sobre mí', 'nav.stack': 'Stack', 'nav.projects': 'Proyectos',
+                'hero.greeting': 'Áreas de Impacto', 'hero.title1': 'Experiencia que conecta', 'hero.title2': 'lógica, datos y nube.',
+                'hero.description': 'Estudiante de Ingeniería en Informática. Desarrollando soluciones de software eficientes, diseñando arquitecturas de datos sólidas y desplegando infraestructuras seguras.',
+                'hero.btnProjects': 'Ver Proyectos',
+                'about.title': 'El Contexto',
+                'about.p1': 'Cursando el 6° semestre de Ingeniería en Informática. Mi enfoque combina una sólida base académica con aplicación práctica.',
+                'about.p2': 'Poseo certificaciones formales en Diseño Ágil de Sistemas y Soporte Computacional.',
+                'stack.title': 'Arsenal Tecnológico', 'stack.cloud.title': 'Cloud & Redes', 'stack.dev.title': 'Desarrollo', 'stack.data.title': 'Datos',
+                'projects.title': 'Proyectos Destacados',
+                'proj1.desc': 'Desarrollo de software de inventario para infraestructura pública.',
+                'proj1.desc2': 'Desde requisitos hasta arquitectura de BBDD.',
+                'proj2.desc': 'Diseño y despliegue de red en AWS con segmentación estricta.',
+                'proj2.desc2': 'Aislamiento de servidor público (EC2) de BD privada.'
+            },
+            fr: {
+                'nav.about': 'À propos', 'nav.stack': 'Stack', 'nav.projects': 'Projets',
+                'hero.greeting': 'Domaines d\'Impact', 'hero.title1': 'L\'expérience qui relie', 'hero.title2': 'logique, données & cloud.',
+                'hero.description': 'Étudiant en Informatique. Développement de logiciels efficaces, architectures de données et infrastructures cloud sécurisées.',
+                'hero.btnProjects': 'Voir Projets',
+                'about.title': 'Le Contexte',
+                'about.p1': 'Étudiant en 6ème semestre d\'Informatique. Alliant théorie et pratique.',
+                'about.p2': 'Certifié en Conception Agile et Support Informatique.',
+                'stack.title': 'Arsenal Technologique', 'stack.cloud.title': 'Cloud & Réseaux', 'stack.dev.title': 'Développement', 'stack.data.title': 'Données',
+                'projects.title': 'Projets Phares',
+                'proj1.desc': 'Logiciel d\'inventaire pour infrastructures publiques.',
+                'proj1.desc2': 'Des exigences à l\'architecture de base de données.',
+                'proj2.desc': 'Infrastructure AWS avec segmentation stricte.',
+                'proj2.desc2': 'Isolement du serveur web public de la base de données.'
+            },
+            it: {
+                'nav.about': 'Chi sono', 'nav.stack': 'Stack', 'nav.projects': 'Progetti',
+                'hero.greeting': 'Aree di Impatto', 'hero.title1': 'Esperienza che connette', 'hero.title2': 'logica, dati e cloud.',
+                'hero.description': 'Studente di Informatica. Sviluppo software efficiente, architetture dati solide e infrastrutture cloud sicure.',
+                'hero.btnProjects': 'Vedi Progetti',
+                'about.title': 'Il Contesto',
+                'about.p1': 'Studente al 6° semestre di Informatica. Unisco teoria accademica e pratica.',
+                'about.p2': 'Certificato in Progettazione Agile e Supporto IT.',
+                'stack.title': 'Arsenale Tecnologico', 'stack.cloud.title': 'Cloud & Reti', 'stack.dev.title': 'Sviluppo', 'stack.data.title': 'Dati',
+                'projects.title': 'Progetti in Evidenza',
+                'proj1.desc': 'Software di inventario per illuminazione pubblica.',
+                'proj1.desc2': 'Dai requisiti all\'architettura del database.',
+                'proj2.desc': 'Infrastruttura di rete AWS con rigorosa segmentazione.',
+                'proj2.desc2': 'Isolamento del server web dal database privato.'
+            },
+            ja: {
+                'nav.about': '概要', 'nav.stack': '技術', 'nav.projects': 'プロジェクト',
+                'hero.greeting': '影響領域', 'hero.title1': '経験が繋ぐ', 'hero.title2': '論理、データ、クラウド。',
+                'hero.description': '情報工学専攻。効率的なソフトウェア開発、データアーキテクチャ設計、安全なクラウド構築。',
+                'hero.btnProjects': 'プロジェクトを見る',
+                'about.title': '背景について',
+                'about.p1': '情報工学の第6セメスター。学術的基盤と実践的応用を組み合わせる。',
+                'about.p2': 'アジャイルシステム設計とITサポートの資格を保持。',
+                'stack.title': '技術アーセナル', 'stack.cloud.title': 'クラウドとネットワーク', 'stack.dev.title': '開発', 'stack.data.title': 'データ',
+                'projects.title': '注目のプロジェクト',
+                'proj1.desc': '公共インフラ向け在庫管理ソフトウェア。',
+                'proj1.desc2': '要件定義からデータベース設計まで。',
+                'proj2.desc': '厳格なセグメンテーションによるAWSネットワーク。',
+                'proj2.desc2': '公開サーバーとプライベートDBの分離。'
+            },
+            pt: {
+                'nav.about': 'Sobre mim', 'nav.stack': 'Stack', 'nav.projects': 'Projetos',
+                'hero.greeting': 'Áreas de Impacto', 'hero.title1': 'Experiência conectando', 'hero.title2': 'lógica, dados e nuvem.',
+                'hero.description': 'Estudante de Engenharia Informática. Desenvolvendo software eficiente, arquiteturas de dados e infraestruturas seguras na nuvem.',
+                'hero.btnProjects': 'Ver Projetos',
+                'about.title': 'O Contexto',
+                'about.p1': 'Estudante no 6º semestre de Informática. Aliando teoria e prática.',
+                'about.p2': 'Certificado em Design Ágil e Suporte de TI.',
+                'stack.title': 'Arsenal Tecnológico', 'stack.cloud.title': 'Cloud & Redes', 'stack.dev.title': 'Desenvolvimento', 'stack.data.title': 'Dados',
+                'projects.title': 'Projetos em Destaque',
+                'proj1.desc': 'Software de inventário para infraestrutura pública.',
+                'proj1.desc2': 'Desde os requisitos até a arquitetura de BD.',
+                'proj2.desc': 'Infraestrutura de rede AWS com segmentação rigorosa.',
+                'proj2.desc2': 'Isolamento de servidor web de banco de dados privado.'
+            },
+            ru: {
+                'nav.about': 'Обо мне', 'nav.stack': 'Стек', 'nav.projects': 'Проекты',
+                'hero.greeting': 'Зоны Влияния', 'hero.title1': 'Опыт, соединяющий', 'hero.title2': 'логику, данные и облако.',
+                'hero.description': 'Студент информатики. Разработка эффективного ПО, архитектуры данных и безопасной облачной инфраструктуры.',
+                'hero.btnProjects': 'Смотреть Проекты',
+                'about.title': 'Контекст',
+                'about.p1': 'Студент 6-го семестра информатики. Сочетаю академическую базу с практикой.',
+                'about.p2': 'Сертифицирован в области Agile-проектирования и IT-поддержки.',
+                'stack.title': 'Технический Арсенал', 'stack.cloud.title': 'Облако и Сети', 'stack.dev.title': 'Разработка', 'stack.data.title': 'Данные',
+                'projects.title': 'Выдающиеся Проекты',
+                'proj1.desc': 'ПО для инвентаризации общественной инфраструктуры.',
+                'proj1.desc2': 'От требований до архитектуры базы данных.',
+                'proj2.desc': 'Сетевая инфраструктура AWS со строгой сегментацией.',
+                'proj2.desc2': 'Изоляция публичного сервера от приватной БД.'
+            },
+            zh: {
+                'nav.about': '关于我', 'nav.stack': '技术栈', 'nav.projects': '项目',
+                'hero.greeting': '影响领域', 'hero.title1': '连接逻辑、数据', 'hero.title2': '与云端的经验。',
+                'hero.description': '计算机工程学生。开发高效软件，设计可靠数据架构，部署安全云设施。',
+                'hero.btnProjects': '查看项目',
+                'about.title': '背景介绍',
+                'about.p1': '计算机工程第六学期学生。将学术基础与实际应用相结合。',
+                'about.p2': '获得敏捷系统设计和IT支持认证。',
+                'stack.title': '技术武器库', 'stack.cloud.title': '云端与网络', 'stack.dev.title': '开发', 'stack.data.title': '数据',
+                'projects.title': '精选项目',
+                'proj1.desc': '公共基础设施库存管理软件。',
+                'proj1.desc2': '从需求到数据库架构设计。',
+                'proj2.desc': '应用严格网络分段的AWS网络基础设施。',
+                'proj2.desc2': '将公共Web服务器与私有数据库隔离。'
+            }
+        };
+
+        const langInfo = {
+            'de': { flag: '🇩🇪', text: 'DE' },
+            'en': { flag: '🇺🇸', text: 'EN' },
+            'es': { flag: '🇪🇸', text: 'ES' },
+            'fr': { flag: '🇫🇷', text: 'FR' },
+            'it': { flag: '🇮🇹', text: 'IT' },
+            'ja': { flag: '🇯🇵', text: 'JA' },
+            'pt': { flag: '🇧🇷', text: 'PT' },
+            'ru': { flag: '🇷🇺', text: 'RU' },
+            'zh': { flag: '🇨🇳', text: 'ZH' }
+        };
+
+        const langBtn = document.getElementById('langBtn');
+        const langMenu = document.getElementById('langMenu');
+        const currentLangFlag = document.getElementById('currentLangFlag');
+        const currentLangText = document.getElementById('currentLangText');
+        const langOptions = document.querySelectorAll('.lang-option');
+
+        // Detección automática del idioma del navegador
+        let browserLang = navigator.language.slice(0, 2).toLowerCase();
+        let currentLang = localStorage.getItem('lang') || (translations[browserLang] ? browserLang : 'es');
+
+        function updateLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.innerHTML = translations[lang][key];
+            });
+            currentLangFlag.innerText = langInfo[lang].flag;
+            currentLangText.innerText = langInfo[lang].text;
+            localStorage.setItem('lang', lang);
+        }
+
+        // Lógica del Dropdown
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langMenu.classList.toggle('hidden');
+        });
+
+        // Cerrar al hacer clic fuera (Requisito cumplido)
+        document.addEventListener('click', () => {
+            if (!langMenu.classList.contains('hidden')) {
+                langMenu.classList.add('hidden');
+            }
+        });
+
+        langOptions.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const selectedLang = e.currentTarget.getAttribute('data-lang');
+                updateLanguage(selectedLang);
+            });
+        });
+
+        // Inicializar idioma
+        updateLanguage(currentLang);
+
+        /* ---------------------------------------------------
+           2. MÓDULO DE MODO OSCURO (Dark Mode)
+        --------------------------------------------------- */
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        // Revisar preferencia del sistema o guardada
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeIcon.classList.replace('ph-moon', 'ph-sun');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Alternar tema al hacer clic
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+                themeIcon.classList.replace('ph-moon', 'ph-sun');
+            } else {
+                localStorage.theme = 'light';
+                themeIcon.classList.replace('ph-sun', 'ph-moon');
+            }
+        });
+    </script>
+</body>
+</html>
